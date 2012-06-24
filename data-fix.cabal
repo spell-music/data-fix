@@ -1,0 +1,24 @@
+Name:            data-fix
+Version:         0.0
+Cabal-Version:   >= 1.6
+License:         BSD3
+License-file:    LICENSE
+Author:          Anton Kholomiov
+Maintainer:      <anton.kholomiov@gmail.com>
+Category:        Data
+Synopsis:        Fixpoint data types
+Build-Type:      Simple
+Description:     
+  Fixpoint types and recursion schemes. If you define your AST as
+  fixpoint type, you get fold and unfold operations for free.
+
+Stability:       Experimental
+
+Library
+  Build-depends: base >= 4
+  Hs-source-dirs: src/
+
+  ghc-options: -Wall -O2
+
+  Exposed-modules: 
+      Data.Fix
