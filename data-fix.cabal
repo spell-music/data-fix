@@ -1,5 +1,5 @@
 Name:            data-fix
-Version:         0.0
+Version:         0.0.1
 Cabal-Version:   >= 1.6
 License:         BSD3
 License-file:    LICENSE
@@ -18,7 +18,7 @@ Library
   Build-depends: base >= 4
   Hs-source-dirs: src/
 
-  ghc-options: -Wall -O2
+  ghc-options: -Wall
 
   Exposed-modules: 
       Data.Fix
