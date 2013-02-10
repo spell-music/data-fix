@@ -14,6 +14,13 @@ Description:
 
 Stability:       Experimental
 
+Homepage:        https://github.com/anton-k/data-fix
+Bug-Reports:     https://github.com/anton-k/data-fix/issues
+
+Source-repository head
+    Type: git
+    Location: https://github.com/anton-k/data-fix
+
 Library
   Build-depends: base >= 4
   Hs-source-dirs: src/
