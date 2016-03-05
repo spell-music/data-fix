@@ -2,7 +2,9 @@
         FlexibleContexts, 
         UndecidableInstances,
         TypeSynonymInstances,
-        DeriveGeneric #-}
+        DeriveGeneric,
+        DeriveDataTypeable,
+        StandaloneDeriving #-}
 -- | Fix-point type. It allows to define generic recurion schemes.
 --
 -- > Fix f = f (Fix f)
@@ -59,7 +61,7 @@ import Data.Traversable
 
 -- | A fix-point type. 
 newtype Fix f = Fix { unFix :: f (Fix f) } deriving (Generic, Typeable)
-instance Typeable f => Data (Fix f)
+deriving instance (Typeable f, Data (f (Fix f))) => Data (Fix f)
 
 -- standard instances 
 
