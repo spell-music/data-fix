@@ -57,6 +57,7 @@ where
 import GHC.Generics
 import Control.Applicative
 import Data.Data
+import Data.Function (on)
 import Data.Traversable
 
 -- | A fix-point type.
@@ -70,10 +71,10 @@ instance Show (f (Fix f)) => Show (Fix f) where
         "Fix " ++ showsPrec 11 (unFix x) s
 
 instance Eq (f (Fix f)) => Eq (Fix f) where
-    a == b = unFix a == unFix b
+    (==) = (==) `on` unFix
 
 instance Ord (f (Fix f)) => Ord (Fix f) where
-    a `compare` b = unFix a `compare` unFix b
+    compare = compare `on` unFix
 
 
 -- recursion
