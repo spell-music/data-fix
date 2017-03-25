@@ -70,6 +70,10 @@ instance Show (f (Fix f)) => Show (Fix f) where
     showsPrec n x = showParen (n > 10) $ \s ->
         "Fix " ++ showsPrec 11 (unFix x) s
 
+instance Read (f (Fix f)) => Read (Fix f) where
+    readsPrec d = readParen (d > 10) $ \r ->
+        [(Fix m, t) | ("Fix", s) <- lex r, (m, t) <- readsPrec 11 s]
+
 instance Eq (f (Fix f)) => Eq (Fix f) where
     (==) = (==) `on` unFix
 
