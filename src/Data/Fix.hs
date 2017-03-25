@@ -104,7 +104,7 @@ psi ~> phi = phi . fmap (hylo phi psi) . psi
 -- | Monadic catamorphism.
 cataM :: (Applicative m, Monad m, Traversable t)
     => (t a -> m a) -> Fix t -> m a
-cataM f = (f =<< ) . traverse (cataM f) . unFix
+cataM f = (f =<<) . traverse (cataM f) . unFix
 
 -- | Monadic anamorphism.
 anaM :: (Applicative m, Monad m, Traversable t)
@@ -114,5 +114,5 @@ anaM f = fmap Fix . (traverse (anaM f) =<<) . f
 -- | Monadic hylomorphism.
 hyloM :: (Applicative m, Monad m, Traversable t)
     => (t b -> m b) -> (a -> m (t a)) -> (a -> m b)
-hyloM phi psi = (cataM phi =<< ) . anaM psi
+hyloM phi psi = (cataM phi =<<) . anaM psi
 
