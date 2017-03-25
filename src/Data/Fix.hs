@@ -97,7 +97,7 @@ hylo phi psi = cata phi . ana psi
 
 -- | Infix version of @hylo@.
 (~>) :: Functor f => (a -> f a) -> (f b -> b) -> (a -> b)
-psi ~> phi = phi . (fmap $ hylo phi psi) . psi
+psi ~> phi = phi . fmap (hylo phi psi) . psi
 
 -- monadic recursion
 
