@@ -66,7 +66,8 @@ deriving instance (Typeable f, Data (f (Fix f))) => Data (Fix f)
 -- standard instances
 
 instance Show (f (Fix f)) => Show (Fix f) where
-    show x = "(" ++ show (unFix x) ++ ")"
+    showsPrec n x = showParen (n > 10) $ \s ->
+        "Fix " ++ showsPrec 11 (unFix x) s
 
 instance Eq (f (Fix f)) => Eq (Fix f) where
     a == b = unFix a == unFix b
