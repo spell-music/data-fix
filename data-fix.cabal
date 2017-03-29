@@ -1,6 +1,6 @@
 Name:            data-fix
 Version:         0.0.4
-Cabal-Version:   >= 1.6
+Cabal-Version:   >= 1.10
 License:         BSD3
 License-file:    LICENSE
 Author:          Anton Kholomiov
@@ -24,7 +24,8 @@ Source-repository head
     Location: https://github.com/anton-k/data-fix
 
 Library
-  Build-depends: base >= 4, base < 5
+  Default-Language: Haskell2010
+  Build-depends: base >= 4.7, base < 5
   Hs-source-dirs: src/
 
   ghc-options: -Wall
