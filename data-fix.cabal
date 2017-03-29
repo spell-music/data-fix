@@ -11,6 +11,8 @@ Build-Type:      Simple
 Description:     
   Fixpoint types and recursion schemes. If you define your AST as
   fixpoint type, you get fold and unfold operations for free.
+  .
+  Thanks for contribution to: Matej Kollar
 
 Stability:       Experimental
 
