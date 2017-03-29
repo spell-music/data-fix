@@ -1,5 +1,5 @@
 Name:            data-fix
-Version:         0.0.4
+Version:         0.0.5
 Cabal-Version:   >= 1.10
 License:         BSD3
 License-file:    LICENSE
@@ -12,7 +12,7 @@ Description:
   Fixpoint types and recursion schemes. If you define your AST as
   fixpoint type, you get fold and unfold operations for free.
   .
-  Thanks for contribution to: Matej Kollar
+  Thanks for contribution to: Matej Kollar, Herbert Valerio Riedel
 
 Stability:       Experimental
 
