@@ -4,6 +4,7 @@
         TypeSynonymInstances,
         DeriveGeneric,
         DeriveDataTypeable,
+        CPP,
         StandaloneDeriving #-}
 -- | Fix-point type. It allows to define generic recurion schemes.
 --
@@ -59,13 +60,28 @@ import Control.Applicative
 import Data.Data
 import Data.Function (on)
 import Data.Traversable
+#if MIN_VERSION_base(4,9,0)
+import Data.Functor.Classes
+#endif
 
 -- | A fix-point type.
 newtype Fix f = Fix { unFix :: f (Fix f) } deriving (Generic, Typeable)
 deriving instance (Typeable f, Data (f (Fix f))) => Data (Fix f)
 
 -- standard instances
-
+#if MIN_VERSION_base(4,9,0)
+instance Eq1 f => Eq (Fix f) where
+    Fix f == Fix g = eq1 f g
+instance Ord1 f => Ord (Fix f) where
+    compare (Fix f) (Fix g) = compare1 f g
+instance Show1 f => Show (Fix f) where
+    showsPrec n (Fix f) = showParen (n > 10)
+        $ showString "Fix "
+        . showsPrec1 11 f
+instance Read1 f => Read (Fix f) where
+    readsPrec d = readParen (d > 10) $ \r ->
+        [(Fix m, t) | ("Fix", s) <- lex r, (m, t) <- readsPrec1 11 s]
+#else
 instance Show (f (Fix f)) => Show (Fix f) where
     showsPrec n x = showParen (n > 10) $ \s ->
         "Fix " ++ showsPrec 11 (unFix x) s
@@ -79,6 +95,7 @@ instance Eq (f (Fix f)) => Eq (Fix f) where
 
 instance Ord (f (Fix f)) => Ord (Fix f) where
     compare = compare `on` unFix
+#endif
 
 
 -- recursion
