@@ -5,7 +5,7 @@
         DeriveGeneric,
         DeriveDataTypeable,
         StandaloneDeriving #-}
--- | Fix-point type. It allows to define generic recurion schemes.
+-- | Fix-point type. It allows to define generic recursion schemes.
 --
 -- > Fix f = f (Fix f)
 --
