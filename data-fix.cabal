@@ -1,5 +1,5 @@
 Name:            data-fix
-Version:         0.0.7
+Version:         0.2.0
 Cabal-Version:   >= 1.10
 License:         BSD3
 License-file:    LICENSE
@@ -8,7 +8,7 @@ Maintainer:      <anton.kholomiov@gmail.com>
 Category:        Data
 Synopsis:        Fixpoint data types
 Build-Type:      Simple
-Description:     
+Description:
   Fixpoint types and recursion schemes. If you define your AST as
   fixpoint type, you get fold and unfold operations for free.
   .
@@ -30,5 +30,5 @@ Library
 
   ghc-options: -Wall
 
-  Exposed-modules: 
+  Exposed-modules:
       Data.Fix
