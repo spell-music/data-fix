@@ -55,10 +55,8 @@ module Data.Fix (
 where
 
 import GHC.Generics
-import Control.Applicative
 import Data.Data
 import Data.Function (on)
-import Data.Traversable
 
 -- | A fix-point type.
 newtype Fix f = Fix { unFix :: f (Fix f) } deriving (Generic, Typeable)
