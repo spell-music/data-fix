@@ -1,9 +1,9 @@
 Name:            data-fix
-Version:         0.2.1
+Version:         0.3.0
 Cabal-Version:   >= 1.10
 License:         BSD3
 License-file:    LICENSE
-Author:          Anton Kholomiov
+Author:          Anton Kholomiov, Edward Kmett, Oleg Grenrus
 Maintainer:      <anton.kholomiov@gmail.com>
 Category:        Data
 Synopsis:        Fixpoint data types
@@ -16,11 +16,15 @@ Description:
 
 Stability:       Experimental
 
-Homepage:        https://github.com/anton-k/data-fix
-Bug-Reports:     https://github.com/anton-k/data-fix/issues
+Homepage:        https://github.com/spell-music/data-fix
+Bug-Reports:     https://github.com/spell-music/data-fix/issues
 
 Tested-With:
-  GHC ==7.10.3
+  GHC ==7.2.2
+   || ==7.4.2
+   || ==7.6.3
+   || ==7.8.4
+   || ==7.10.3
    || ==8.0.2
    || ==8.2.2
    || ==8.4.4
@@ -28,16 +32,37 @@ Tested-With:
    || ==8.8.3
    || ==8.10.1
 
+extra-source-files:
+  CHANGELOG.md
+
 Source-repository head
     Type: git
-    Location: https://github.com/anton-k/data-fix
+    Location: https://github.com/spell-music/data-fix
 
-Library
-  Default-Language: Haskell2010
-  Build-depends: base >= 4.8, base < 5
-  Hs-source-dirs: src/
+library
+  hs-source-dirs:   src
+  default-language: Haskell2010
+  ghc-options:      -Wall
+  exposed-modules:  Data.Fix
 
-  ghc-options: -Wall
+  if impl(ghc >=8.0)
+    ghc-options: -Wno-trustworthy-safe
 
-  Exposed-modules:
-      Data.Fix
+  if impl(ghc >=8.4)
+    ghc-options:
+      -Wincomplete-uni-patterns -Wincomplete-record-updates
+      -Wredundant-constraints -Widentities -Wmissing-export-lists
+
+  build-depends:
+      base      >=4.4     && <4.15
+    , deepseq   >=1.3.0.0 && <1.5
+    , hashable  >=1.2.7.0 && <1.4
+
+  if impl(ghc <7.6)
+    -- for GHC.Generics
+    build-depends: ghc-prim
+
+  if !impl(ghc >=8.0)
+    build-depends:
+        transformers         >=0.3   && <0.6
+      , transformers-compat  >=0.6.5 && <0.7
