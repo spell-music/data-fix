@@ -38,7 +38,7 @@ sum = cata $ \x -> case x of
   Cons a s -> a + s
 ```
 
-### Acknowledgments
+### Acknowledgements
 
 Thanks for contribution to: Matej Kollar, Herbert Valerio Riedel
 
