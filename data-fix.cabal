@@ -19,13 +19,22 @@ Stability:       Experimental
 Homepage:        https://github.com/anton-k/data-fix
 Bug-Reports:     https://github.com/anton-k/data-fix/issues
 
+Tested-With:
+  GHC ==7.10.3
+   || ==8.0.2
+   || ==8.2.2
+   || ==8.4.4
+   || ==8.6.5
+   || ==8.8.3
+   || ==8.10.1
+
 Source-repository head
     Type: git
     Location: https://github.com/anton-k/data-fix
 
 Library
   Default-Language: Haskell2010
-  Build-depends: base >= 4.7, base < 5
+  Build-depends: base >= 4.8, base < 5
   Hs-source-dirs: src/
 
   ghc-options: -Wall
