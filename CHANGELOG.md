@@ -1,3 +1,7 @@
+## 0.3.1
+
+- Update bounds for GHC-9.0
+
 ## 0.3.0
 
 - Rename `cata`, `ana` and `hylo` into `foldFix`, `unfoldFix` and `refold.
