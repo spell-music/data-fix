@@ -57,16 +57,22 @@ module Data.Fix (
     hoistFix',
     foldFix,
     unfoldFix,
+    wrapFix,
+    unwrapFix,
     -- * Mu - least fixed point
     Mu (..),
     hoistMu,
     foldMu,
     unfoldMu,
+    wrapMu,
+    unwrapMu,
     -- * Nu - greatest fixed point
     Nu (..),
     hoistNu,
     foldNu,
     unfoldNu,
+    wrapNu,
+    unwrapNu,
     -- * Refolding
     refold,
     -- * Monadic variants
@@ -157,6 +163,28 @@ foldFix f = go where go = f . fmap go . unFix
 --
 unfoldFix :: Functor f => (a -> f a) -> a -> Fix f
 unfoldFix f = go where go = Fix . fmap go . f
+
+-- | Wrap 'Fix'.
+--
+-- >>> let x = unfoldFix (\i -> if i < 3 then Cons i (i + 1) else Nil) (0 :: Int)
+-- >>> wrapFix (Cons 10 x)
+-- Fix (Cons 10 (Fix (Cons 0 (Fix (Cons 1 (Fix (Cons 2 (Fix Nil))))))))
+--
+-- @since 0.3.2
+--
+wrapFix :: f (Fix f) -> Fix f
+wrapFix = Fix
+
+-- | Unwrap 'Fix'.
+--
+-- >>> let x = unfoldFix (\i -> if i < 3 then Cons i (i + 1) else Nil) (0 :: Int)
+-- >>> unwrapFix x
+-- Cons 0 (Fix (Cons 1 (Fix (Cons 2 (Fix Nil)))))
+--
+-- @since 0.3.2
+--
+unwrapFix :: Fix f -> f (Fix f)
+unwrapFix = unFix
 
 -------------------------------------------------------------------------------
 -- Functor instances
@@ -275,6 +303,28 @@ foldMu f (Mu mk) = mk f
 unfoldMu :: Functor f => (a -> f a) -> a -> Mu f
 unfoldMu f x = Mu $ \mk -> refold mk f x
 
+-- | Wrap 'Mu'.
+--
+-- >>> let x = unfoldMu (\i -> if i < 3 then Cons i (i + 1) else Nil) (0 :: Int)
+-- >>> wrapMu (Cons 10 x)
+-- unfoldMu unFix (Fix (Cons 10 (Fix (Cons 0 (Fix (Cons 1 (Fix (Cons 2 (Fix Nil)))))))))
+--
+-- @since 0.3.2
+--
+wrapMu :: Functor f => f (Mu f) -> Mu f
+wrapMu fx = Mu $ \f -> f (fmap (foldMu f) fx)
+
+-- | Unwrap 'Mu'.
+--
+-- >>> let x = unfoldMu (\i -> if i < 3 then Cons i (i + 1) else Nil) (0 :: Int)
+-- >>> unwrapMu x
+-- Cons 0 (unfoldMu unFix (Fix (Cons 1 (Fix (Cons 2 (Fix Nil))))))
+--
+-- @since 0.3.2
+--
+unwrapMu :: Functor f => Mu f -> f (Mu f)
+unwrapMu = foldMu (fmap wrapMu)
+
 -------------------------------------------------------------------------------
 -- Nu
 -------------------------------------------------------------------------------
@@ -319,6 +369,28 @@ foldNu f (Nu next seed) = refold f next seed
 -- unfoldNu unFix (Fix (Cons 0 (Fix (Cons 1 (Fix (Cons 2 (Fix (Cons 3 (Fix Nil)))))))))
 unfoldNu :: (a -> f a) -> a -> Nu f
 unfoldNu = Nu
+
+-- | Wrap 'Nu'.
+--
+-- >>> let x = unfoldNu (\i -> if i < 3 then Cons i (i + 1) else Nil) (0 :: Int)
+-- >>> wrapNu (Cons 10 x)
+-- unfoldNu unFix (Fix (Cons 10 (Fix (Cons 0 (Fix (Cons 1 (Fix (Cons 2 (Fix Nil)))))))))
+--
+-- @since 0.3.2
+--
+wrapNu :: Functor f => f (Nu f) -> Nu f
+wrapNu = unfoldNu (fmap unwrapNu)
+
+-- | Unwrap 'Nu'.
+--
+-- >>> let x = unfoldNu (\i -> if i < 3 then Cons i (i + 1) else Nil) (0 :: Int)
+-- >>> unwrapNu x
+-- Cons 0 (unfoldNu unFix (Fix (Cons 1 (Fix (Cons 2 (Fix Nil))))))
+--
+-- @since 0.3.2
+--
+unwrapNu :: Functor f => Nu f -> f (Nu f)
+unwrapNu (Nu f x) = fmap (Nu f) (f x)
 
 -------------------------------------------------------------------------------
 -- refold
