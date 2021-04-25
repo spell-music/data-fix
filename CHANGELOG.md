@@ -1,3 +1,7 @@
+## 0.3.2
+
+- Add `(un)wrapFix/Mu/Nu`
+
 ## 0.3.1
 
 - Update bounds for GHC-9.0
