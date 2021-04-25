@@ -84,7 +84,7 @@ import Data.Traversable (Traversable (..))
 import Prelude (Eq (..), Functor (..), Monad (..), Ord (..), Read (..), Show (..), showParen, showString, ($), (.), (=<<))
 
 #ifdef __GLASGOW_HASKELL__
-#if! HAS_POLY_TYPEABLE
+#if !HAS_POLY_TYPEABLE
 import Prelude (const, error, undefined)
 #endif
 #endif
@@ -110,7 +110,7 @@ import Data.Data
 
 -- $setup
 -- >>> :set -XDeriveFunctor
--- >>> import Prelude (showChar, Int, Num (..))
+-- >>> import Prelude
 -- >>> import Data.Functor.Classes
 -- >>> data ListF a b = Nil | Cons a b deriving (Show, Functor)
 --
