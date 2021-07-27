@@ -1,6 +1,7 @@
 ## 0.3.2
 
 - Add `(un)wrapFix/Mu/Nu`
+- Support `transformers-0.6`
 
 ## 0.3.1
 
