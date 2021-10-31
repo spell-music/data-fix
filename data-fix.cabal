@@ -1,6 +1,6 @@
 Name:            data-fix
 Version:         0.3.2
-x-revision:      1
+x-revision:      2
 Cabal-Version:   >= 1.10
 License:         BSD3
 License-file:    LICENSE
@@ -59,7 +59,7 @@ library
   build-depends:
       base      >=4.4     && <4.17
     , deepseq   >=1.3.0.0 && <1.5
-    , hashable  >=1.2.7.0 && <1.4
+    , hashable  >=1.2.7.0 && <1.5
 
   if impl(ghc <7.6)
     -- for GHC.Generics
