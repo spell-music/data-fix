@@ -3,6 +3,7 @@
 {-# LANGUAGE DeriveGeneric             #-}
 {-# LANGUAGE ExistentialQuantification #-}
 {-# LANGUAGE RankNTypes                #-}
+{-# LANGUAGE QuantifiedConstraints     #-}
 {-# LANGUAGE Trustworthy               #-}
 
 -- needed for Data instance
@@ -53,6 +54,7 @@
 module Data.Fix (
     -- * Fix
     Fix (..),
+    BiFix (..),
     hoistFix,
     hoistFix',
     foldFix,
@@ -86,7 +88,9 @@ module Data.Fix (
 
 -- Explicit imports help dodge unused imports warnings,
 -- as we say what we want from Prelude
-import Data.Traversable (Traversable (..))
+import Data.Traversable (Traversable (..), foldMapDefault)
+import Data.Bitraversable (Bitraversable, bisequenceA)
+import Data.Foldable (Foldable, foldMap)
 import Prelude (Eq (..), Functor (..), Monad (..), Ord (..), Read (..), Show (..), showParen, showString, ($), (.), (=<<))
 
 #ifdef __GLASGOW_HASKELL__
@@ -97,6 +101,7 @@ import Prelude (const, error, undefined)
 
 import Control.Monad        (liftM)
 import Data.Function        (on)
+import Data.Bifunctor       (Bifunctor, first)
 import Data.Functor.Classes (Eq1, Ord1, Read1, Show1, compare1, eq1, readsPrec1, showsPrec1)
 import Data.Hashable        (Hashable (..))
 import Data.Hashable.Lifted (Hashable1, hashWithSalt1)
@@ -208,6 +213,17 @@ instance Read1 f => Read (Fix f) where
         Ident "Fix" <- lexP
         fmap Fix (step (readS_to_Prec readsPrec1))
 #endif
+
+newtype BiFix f b = BiFix (Fix (f b))
+
+instance (Bifunctor f, forall a. Functor (f a)) => Functor (BiFix f) where
+  fmap fn (BiFix e) = BiFix $ foldFix (Fix . first fn) e
+
+instance (Bitraversable f, forall a. Traversable (f a)) => Traversable (BiFix f) where
+  sequenceA (BiFix e) = BiFix `fmap` foldFix (fmap Fix . bisequenceA) e
+
+instance (Bitraversable f, forall a. Traversable (f a)) => Foldable (BiFix f) where
+  foldMap = foldMapDefault
 
 -------------------------------------------------------------------------------
 -- hashable
