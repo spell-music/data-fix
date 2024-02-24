@@ -97,15 +97,13 @@ import Prelude (const, error, undefined)
 
 import Control.Monad        (liftM)
 import Data.Function        (on)
-import Data.Functor.Classes (Eq1, Ord1, Read1, Show1, compare1, eq1, readsPrec1, showsPrec1)
 import Data.Hashable        (Hashable (..))
-import Data.Hashable.Lifted (Hashable1, hashWithSalt1)
 import Data.Typeable        (Typeable)
 import GHC.Generics         (Generic)
 import Text.Read            (Lexeme (Ident), Read (..), lexP, parens, prec, readS_to_Prec, step)
 
 #if MIN_VERSION_deepseq(1,4,3)
-import Control.DeepSeq (NFData (..), NFData1, rnf1)
+import Control.DeepSeq (NFData (..))
 #endif
 
 #if HAS_POLY_TYPEABLE
@@ -190,35 +188,41 @@ unwrapFix = unFix
 -- Functor instances
 -------------------------------------------------------------------------------
 
-instance Eq1 f => Eq (Fix f) where
-    Fix a == Fix b = eq1 a b
+instance Eq (f (Fix f)) => Eq (Fix f) where
+    Fix a == Fix b = a == b
 
-instance Ord1 f => Ord (Fix f) where
-    compare (Fix a) (Fix b) = compare1 a b
+instance Ord (f (Fix f)) => Ord (Fix f) where
+    compare (Fix a) (Fix b) = compare a b
+    min (Fix a) (Fix b) = Fix (min a b)
+    max (Fix a) (Fix b) = Fix (max a b)
+    Fix a >= Fix b = a >= b
+    Fix a > Fix b = a > b
+    Fix a < Fix b = a < b
+    Fix a <= Fix b = a <= b
 
-instance Show1 f => Show (Fix f) where
+instance Show (f (Fix f)) => Show (Fix f) where
     showsPrec d (Fix a) =
         showParen (d >= 11)
             $ showString "Fix "
-            . showsPrec1 11 a
+            . showsPrec 11 a
 
 #ifdef __GLASGOW_HASKELL__
-instance Read1 f => Read (Fix f) where
+instance Read (f (Fix f)) => Read (Fix f) where
     readPrec = parens $ prec 10 $ do
         Ident "Fix" <- lexP
-        fmap Fix (step (readS_to_Prec readsPrec1))
+        fmap Fix (step (readS_to_Prec readsPrec))
 #endif
 
 -------------------------------------------------------------------------------
 -- hashable
 -------------------------------------------------------------------------------
 
-instance Hashable1 f => Hashable (Fix f) where
-    hashWithSalt salt = hashWithSalt1 salt . unFix
+instance Hashable (f (Fix f)) => Hashable (Fix f) where
+    hashWithSalt salt = hashWithSalt salt . unFix
 
 #if MIN_VERSION_deepseq(1,4,3)
-instance NFData1 f => NFData (Fix f) where
-    rnf = rnf1 . unFix
+instance NFData (f (Fix f)) => NFData (Fix f) where
+    rnf = rnf . unFix
 #endif
 
 -------------------------------------------------------------------------------
@@ -230,7 +234,7 @@ instance NFData1 f => NFData (Fix f) where
 deriving instance Typeable Fix
 deriving instance (Typeable f, Data (f (Fix f))) => Data (Fix f)
 #else
-instance Typeable1 f => Typeable (Fix f) where
+instance Typeable (f (Fix f)) => Typeable (Fix f) where
    typeOf t = mkTyConApp fixTyCon [typeOf1 (undefined `asArgsTypeOf` t)]
      where asArgsTypeOf :: f a -> Fix f -> f a
            asArgsTypeOf = const
@@ -243,7 +247,7 @@ fixTyCon = mkTyCon "Data.Functor.Foldable.Fix"
 #endif
 {-# NOINLINE fixTyCon #-}
 
-instance (Typeable1 f, Data (f (Fix f))) => Data (Fix f) where
+instance (Typeable (f (Fix f)), Data (f (Fix f))) => Data (Fix f) where
   gfoldl f z (Fix a) = z Fix `f` a
   toConstr _ = fixConstr
   gunfold k z c = case constrIndex c of
@@ -266,18 +270,22 @@ fixDataType = mkDataType "Data.Functor.Foldable.Fix" [fixConstr]
 -- | Least fixed point. Efficient folding.
 newtype Mu f = Mu { unMu :: forall a. (f a -> a) -> a }
 
-instance (Functor f, Eq1 f) => Eq (Mu f) where
+instance (Functor f, Eq (f (Fix f))) => Eq (Mu f) where
     (==) = (==) `on` foldMu Fix
 
-instance (Functor f, Ord1 f) => Ord (Mu f) where
+instance (Functor f, Ord (f (Fix f))) => Ord (Mu f) where
     compare = compare `on` foldMu Fix
+    (>=) = (>=) `on` foldMu Fix
+    (>) = (>) `on` foldMu Fix
+    (<) = (<) `on` foldMu Fix
+    (<=) = (<=) `on` foldMu Fix
 
-instance (Functor f, Show1 f) => Show (Mu f) where
+instance (Functor f, Show (f (Fix f))) => Show (Mu f) where
     showsPrec d f = showParen (d > 10) $
         showString "unfoldMu unFix " . showsPrec 11 (foldMu Fix f)
 
 #ifdef __GLASGOW_HASKELL__
-instance (Functor f, Read1 f) => Read (Mu f) where
+instance (Functor f, Read (f (Fix f))) => Read (Mu f) where
     readPrec = parens $ prec 10 $ do
         Ident "unfoldMu" <- lexP
         Ident "unFix" <- lexP
@@ -332,18 +340,22 @@ unwrapMu = foldMu (fmap wrapMu)
 -- | Greatest fixed point. Efficient unfolding.
 data Nu f = forall a. Nu (a -> f a) a
 
-instance (Functor f, Eq1 f) => Eq (Nu f) where
+instance (Functor f, Eq (f (Fix f))) => Eq (Nu f) where
     (==) = (==) `on` foldNu Fix
 
-instance (Functor f, Ord1 f) => Ord (Nu f) where
+instance (Functor f, Ord (f (Fix f))) => Ord (Nu f) where
     compare = compare `on` foldNu Fix
+    (>=) = (>=) `on` foldNu Fix
+    (>) = (>) `on` foldNu Fix
+    (<) = (<) `on` foldNu Fix
+    (<=) = (<=) `on` foldNu Fix
 
-instance (Functor f, Show1 f) => Show (Nu f) where
+instance (Functor f, Show (f (Fix f))) => Show (Nu f) where
     showsPrec d f = showParen (d > 10) $
         showString "unfoldNu unFix " . showsPrec 11 (foldNu Fix f)
 
 #ifdef __GLASGOW_HASKELL__
-instance (Functor f, Read1 f) => Read (Nu f) where
+instance (Functor f, Read (f (Fix f))) => Read (Nu f) where
     readPrec = parens $ prec 10 $ do
         Ident "unfoldNu" <- lexP
         Ident "unFix" <- lexP
