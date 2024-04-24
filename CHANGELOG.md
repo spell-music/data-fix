@@ -1,3 +1,8 @@
+## 0.3.4
+
+- Use quantified constraints superclasses for `Eq`, `Ord`, `NFData` and
+  `Hashable Fix` instances, when available.
+
 ## 0.3.3
 
 - Drop support for GHCs prior 8.6.5
