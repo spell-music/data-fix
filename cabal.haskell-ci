@@ -1,4 +1,3 @@
-distribution: bionic
--- due GHCi limitations and Data.Functor.Classes changes prior
-docspec: >=8.0
+distribution: jammy
+docspec: True
 head-hackage: False

@@ -1,3 +1,7 @@
+## 0.3.3
+
+- Drop support for GHCs prior 8.6.5
+
 ## 0.3.2
 
 - Add `(un)wrapFix/Mu/Nu`
