@@ -1,6 +1,5 @@
 Name:            data-fix
-Version:         0.3.2
-x-revision:      5
+Version:         0.3.3
 Cabal-Version:   >= 1.10
 License:         BSD3
 License-file:    LICENSE
@@ -21,22 +20,14 @@ Homepage:        https://github.com/spell-music/data-fix
 Bug-Reports:     https://github.com/spell-music/data-fix/issues
 
 Tested-With:
-  GHC ==7.2.2
-   || ==7.4.2
-   || ==7.6.3
-   || ==7.8.4
-   || ==7.10.3
-   || ==8.0.2
-   || ==8.2.2
-   || ==8.4.4
-   || ==8.6.5
+  GHC ==8.6.5
    || ==8.8.4
    || ==8.10.7
    || ==9.0.2
    || ==9.2.8
-   || ==9.4.7
-   || ==9.6.3
-   || ==9.8.1
+   || ==9.4.8
+   || ==9.6.5
+   || ==9.8.2
 
 extra-source-files:
   CHANGELOG.md
@@ -51,24 +42,12 @@ library
   ghc-options:      -Wall
   exposed-modules:  Data.Fix
 
-  if impl(ghc >=8.0)
-    ghc-options: -Wno-trustworthy-safe
-
-  if impl(ghc >=8.4)
-    ghc-options:
+  ghc-options: -Wno-trustworthy-safe
+  ghc-options:
       -Wincomplete-uni-patterns -Wincomplete-record-updates
       -Wredundant-constraints -Widentities -Wmissing-export-lists
 
   build-depends:
-      base      >=4.4     && <4.20
-    , deepseq   >=1.3.0.0 && <1.6
-    , hashable  >=1.2.7.0 && <1.5
-
-  if impl(ghc <7.6)
-    -- for GHC.Generics
-    build-depends: ghc-prim
-
-  if !impl(ghc >=8.0)
-    build-depends:
-        transformers         >=0.3   && <0.7
-      , transformers-compat  >=0.6.5 && <0.8
+      base      >=4.12.0.0  && <4.20
+    , deepseq   >=1.4.4.0 && <1.6
+    , hashable  >=1.4.4.0 && <1.5
