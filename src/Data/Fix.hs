@@ -9,6 +9,7 @@
 {-# LANGUAGE UndecidableInstances      #-}
 
 #define HAS_POLY_TYPEABLE MIN_VERSION_base(4,7,0)
+#define HAS_QUANTIFIED_FUNCTOR_CLASSES MIN_VERSION_base(4,18,0)
 
 #if HAS_POLY_TYPEABLE
 {-# LANGUAGE StandaloneDeriving        #-}
@@ -97,7 +98,7 @@ import Prelude (const, error, undefined)
 
 import Control.Monad        (liftM)
 import Data.Function        (on)
-import Data.Functor.Classes (Eq1, Ord1, Read1, Show1, compare1, eq1, readsPrec1, showsPrec1)
+import Data.Functor.Classes (Eq1, Ord1, Read1, Show1, readsPrec1, showsPrec1)
 import Data.Hashable        (Hashable (..))
 import Data.Hashable.Lifted (Hashable1, hashWithSalt1)
 import Data.Typeable        (Typeable)
@@ -112,6 +113,10 @@ import Control.DeepSeq (NFData (..), NFData1, rnf1)
 import Data.Data (Data)
 #else
 import Data.Data
+#endif
+
+#if !HAS_QUANTIFIED_FUNCTOR_CLASSES
+import Data.Functor.Classes (compare1, eq1)
 #endif
 
 -- $setup
@@ -191,10 +196,24 @@ unwrapFix = unFix
 -------------------------------------------------------------------------------
 
 instance Eq1 f => Eq (Fix f) where
+#if HAS_QUANTIFIED_FUNCTOR_CLASSES
+    Fix a == Fix b = a == b
+#else
     Fix a == Fix b = eq1 a b
+#endif
 
 instance Ord1 f => Ord (Fix f) where
+#if HAS_QUANTIFIED_FUNCTOR_CLASSES
+    compare (Fix a) (Fix b) = compare a b
+    min (Fix a) (Fix b) = Fix (min a b)
+    max (Fix a) (Fix b) = Fix (max a b)
+    Fix a >= Fix b = a >= b
+    Fix a > Fix b = a > b
+    Fix a < Fix b = a < b
+    Fix a <= Fix b = a <= b
+#else
     compare (Fix a) (Fix b) = compare1 a b
+#endif
 
 instance Show1 f => Show (Fix f) where
     showsPrec d (Fix a) =
@@ -214,11 +233,24 @@ instance Read1 f => Read (Fix f) where
 -------------------------------------------------------------------------------
 
 instance Hashable1 f => Hashable (Fix f) where
+#if MIN_VERSION_hashable(1,5,0)
+    hash (Fix x) = hash x
+    hashWithSalt salt (Fix x) = hashWithSalt salt x
+#else
     hashWithSalt salt = hashWithSalt1 salt . unFix
+#endif
+
+-------------------------------------------------------------------------------
+-- deepseq
+-------------------------------------------------------------------------------
 
 #if MIN_VERSION_deepseq(1,4,3)
 instance NFData1 f => NFData (Fix f) where
+#if MIN_VERSION_deepseq(1,5,0)
+    rnf (Fix a) = rnf a 
+#else
     rnf = rnf1 . unFix
+#endif
 #endif
 
 -------------------------------------------------------------------------------

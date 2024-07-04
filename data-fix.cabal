@@ -1,7 +1,7 @@
+cabal-version:   2.2
 Name:            data-fix
-Version:         0.3.3
-Cabal-Version:   >= 1.10
-License:         BSD3
+Version:         0.3.4
+License:         BSD-3-Clause
 License-file:    LICENSE
 Author:          Anton Kholomiov, Edward Kmett, Oleg Grenrus
 Maintainer:      <anton.kholomiov@gmail.com>
@@ -26,7 +26,7 @@ Tested-With:
    || ==9.0.2
    || ==9.2.8
    || ==9.4.8
-   || ==9.6.5
+   || ==9.6.6
    || ==9.8.2
    || ==9.10.1
 
@@ -49,6 +49,6 @@ library
       -Wredundant-constraints -Widentities -Wmissing-export-lists
 
   build-depends:
-      base      >=4.12.0.0  && <4.21
-    , deepseq   >=1.4.4.0 && <1.6
-    , hashable  >=1.4.4.0 && <1.5
+    , base      >=4.12.0.0 && <4.21
+    , deepseq   >=1.4.4.0  && <1.6
+    , hashable  >=1.4.4.0  && <1.6
